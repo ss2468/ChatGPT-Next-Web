@@ -97,33 +97,34 @@ export const useUpdateStore = createPersistStore(
               if (!granted) {
                 return;
               } else {
+                /* fixme 注释update提示 */
                 // Request permission to show notifications
-                window.__TAURI__?.notification
-                  .requestPermission()
-                  .then((permission) => {
-                    if (permission === "granted") {
-                      if (version === remoteId) {
-                        // Show a notification using Tauri
-                        window.__TAURI__?.notification.sendNotification({
-                          title: "NextChat",
-                          body: `${Locale.Settings.Update.IsLatest}`,
-                          icon: `${ChatGptIcon.src}`,
-                          sound: "Default",
-                        });
-                      } else {
-                        const updateMessage =
-                          Locale.Settings.Update.FoundUpdate(`${remoteId}`);
-                        // Show a notification for the new version using Tauri
-                        window.__TAURI__?.notification.sendNotification({
-                          title: "NextChat",
-                          body: updateMessage,
-                          icon: `${ChatGptIcon.src}`,
-                          sound: "Default",
-                        });
-                        clientUpdate();
-                      }
-                    }
-                  });
+                // window.__TAURI__?.notification
+                //   .requestPermission()
+                //   .then((permission) => {
+                //     if (permission === "granted") {
+                //       if (version === remoteId) {
+                //         // Show a notification using Tauri
+                //         window.__TAURI__?.notification.sendNotification({
+                //           title: "NextChat",
+                //           body: `${Locale.Settings.Update.IsLatest}`,
+                //           icon: `${ChatGptIcon.src}`,
+                //           sound: "Default",
+                //         });
+                //       } else {
+                //         const updateMessage =
+                //           Locale.Settings.Update.FoundUpdate(`${remoteId}`);
+                //         // Show a notification for the new version using Tauri
+                //         window.__TAURI__?.notification.sendNotification({
+                //           title: "NextChat",
+                //           body: updateMessage,
+                //           icon: `${ChatGptIcon.src}`,
+                //           sound: "Default",
+                //         });
+                //         clientUpdate();
+                //       }
+                //     }
+                //   });
               }
             });
         }

@@ -46,3 +46,12 @@ dev
 *.key.pub
 
 masks.json
+
+# 文件夹
+/.idea/
+
+# 项目
+/demo/
+
+# 文件
+*.rar
