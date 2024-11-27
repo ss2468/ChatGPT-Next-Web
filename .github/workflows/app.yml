@@ -1,10 +1,5 @@
 name: Release App
 
-# on:
-#   workflow_dispatch:
-#   release:
-#     types: [published]
-
 # 当demo分支的提交时执行此action
 on:
   push:
@@ -17,24 +12,22 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     outputs:
-      release_id: ${{ steps.create-release.outputs.result }}
+      release_id: ${{ steps.create-release.outputs.id }}
 
     steps:
       - uses: actions/checkout@v3
-      - name: setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: get version
-        run: echo "PACKAGE_VERSION=$(node -p "require('./src-tauri/tauri.conf.json').package.version")" >> $GITHUB_ENV
       - name: create release
         id: create-release
         uses: actions/github-script@v6
         with:
           script: |
-            const { data } = await github.rest.repos.getLatestRelease({
+            const { data } = await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
+              tag_name: "test",
+              name: "test",
+              draft: false,
+              prerelease: false
             })
             return data.id
 
@@ -91,7 +84,7 @@ jobs:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         with:
-          releaseId: ${{ needs.create-release.outputs.release_id }}
+          releaseId: ${{ steps.create-release.outputs.id }}
           args: ${{ matrix.config.os == 'macos-latest' && '--target universal-apple-darwin' || '' }}
 
   publish-release:
@@ -105,7 +98,7 @@ jobs:
         id: publish-release
         uses: actions/github-script@v6
         env:
-          release_id: ${{ needs.create-release.outputs.release_id }}
+          release_id: ${{ steps.create-release.outputs.id }}
         with:
           script: |
             github.rest.repos.updateRelease({
