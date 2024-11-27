@@ -1,9 +1,15 @@
 name: Release App
 
+# on:
+#   workflow_dispatch:
+#   release:
+#     types: [published]
+
+# 当demo分支的提交时执行此action
 on:
-  workflow_dispatch:
-  release:
-    types: [published]
+  push:
+    branches:
+      - demo
 
 jobs:
   create-release:
@@ -40,12 +46,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - os: ubuntu-latest
-            arch: x86_64
-            rust_target: x86_64-unknown-linux-gnu
-          - os: macos-latest
-            arch: aarch64
-            rust_target: x86_64-apple-darwin,aarch64-apple-darwin
+          # - os: ubuntu-latest
+          #   arch: x86_64
+          #   rust_target: x86_64-unknown-linux-gnu
+          # - os: macos-latest
+          #   arch: aarch64
+          #   rust_target: x86_64-apple-darwin,aarch64-apple-darwin
           - os: windows-latest
             arch: x86_64
             rust_target: x86_64-pc-windows-msvc
@@ -73,6 +79,7 @@ jobs:
       - name: install frontend dependencies
         run: yarn install # change this to npm or pnpm depending on which one you use
       - uses: tauri-apps/tauri-action@v0
+        # 需要设置的secrets参数
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
